@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Force form elements to keep your set colors in dark mode */
+input,
+textarea,
+select {
+  background-color: inherit !important; /* keeps whatever color you've set */
+  color: black !important; /* keeps text color */
+  border-color: inherit !important; /* keeps border color */
+}
+
+/* Optional: remove dark mode autofill background in inputs */
+/* input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px inherit inset;
+  -webkit-text-fill-color: inherit;
+} */
