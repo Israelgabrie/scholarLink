@@ -4,24 +4,32 @@ const jwt = require("jsonwebtoken");
 
 async function signIn(req, res) {
   try {
-    const { email, password, rememberMe } = req.body;
+    // ✅ SAFE destructuring
+    const { email, password, rememberMe } = req.body || {};
     const tokenFromCookie = req.cookies?.authToken;
+
+    console.log(tokenFromCookie);
 
     let user;
 
+    // -------------------
     // 1️⃣ LOGIN WITH EMAIL + PASSWORD
+    // -------------------
     if (email && password) {
       const rawUser = await User.findOne({ email: email.toLowerCase() });
       if (!rawUser) {
-        return res.status(404).json({ success: false, message: "User not found" });
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
       }
 
       const isPasswordValid = bcrypt.compareSync(password, rawUser.password);
       if (!isPasswordValid) {
-        return res.status(401).json({ success: false, message: "Invalid password" });
+        return res
+          .status(401)
+          .json({ success: false, message: "Invalid password" });
       }
 
-      // fetch user without password + populate school
       user = await User.findById(rawUser._id)
         .select("-password")
         .populate("school");
@@ -34,8 +42,8 @@ async function signIn(req, res) {
 
       res.cookie("authToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        // secure: process.env.NODE_ENV === "production",
+        sameSite: "lax", // ✅ REQUIRED for cross-domain (Render)
         maxAge: rememberMe ? 86400000 : 3600000,
       });
 
@@ -46,19 +54,30 @@ async function signIn(req, res) {
       });
     }
 
+    // -------------------
     // 2️⃣ AUTO LOGIN VIA COOKIE
+    // -------------------
     if (tokenFromCookie) {
-      const decoded = jwt.verify(tokenFromCookie, process.env.JWT_SECRET);
+      let decoded;
+
+      try {
+        decoded = jwt.verify(tokenFromCookie, process.env.JWT_SECRET);
+      } catch {
+        return res
+          .status(401)
+          .json({ success: false, message: "Invalid or expired session" });
+      }
 
       user = await User.findById(decoded.id)
         .select("-password")
         .populate("school");
 
       if (!user) {
-        return res.status(404).json({ success: false, message: "User not found" });
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
       }
 
-      // Only allow cookie login if verified
       if (!user.verified) {
         return res.status(403).json({
           success: false,
@@ -73,6 +92,9 @@ async function signIn(req, res) {
       });
     }
 
+    // -------------------
+    // 3️⃣ NO LOGIN DATA
+    // -------------------
     return res.status(400).json({
       success: false,
       message: "No login credentials or session found",

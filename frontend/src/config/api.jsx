@@ -1,4 +1,4 @@
-export const backendLocation = "";
+export const backendLocation = "http://localhost:5000";
 
 export const routes = {
   signUp: "auth/sign-up",

@@ -1,26 +1,69 @@
-"use client"
+"use client";
 
 // ============================================
 // FILE: Layout.jsx
 // PURE TEMPLATE-DRIVEN LAYOUT
 // ============================================
 
-import { useState } from "react"
-import { Outlet } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
-import Sidebar from "../components/admin/navigation/sidebar"
-import Navbar from "../components/admin/navigation/navbar"
-// import LoadingComponent from "../components/loadingComponent/LoadingComponent";
+import Sidebar from "../components/admin/navigation/sidebar";
+import Navbar from "../components/admin/navigation/navbar";
+import { useUser } from "../contexts/userContext";
+import { signInUser } from "../services/signIn";
+import toast from "react-hot-toast";
+import LoadingScreen from "../pages/loadingScreen/loadingScreen";
 
 /* =======================
    COMPONENT
 ======================= */
 
 export default function AdminLayout({ template = {} }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user, setUser } = useUser();
+  const navigate = useNavigate();
 
   const handleToggleSidebar = () => {
-    setSidebarOpen((prev) => !prev)
+    setSidebarOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    async function checkUser() {
+      if (!user?._id) {
+        try {
+          const response = await signInUser();
+
+          if (response?.success && response?.user?._id) {
+            if (response?.user?.role == "admin") {
+              toast("heyyyyyy")
+              setUser(response.user);
+            } else {
+              toast("Unauthorized User");
+              navigate("/sign-in");
+            }
+          } else {
+            toast.error("Please sign in to continue");
+            navigate("/sign-in");
+          }
+        } catch (error) {
+          console.error("Auth check error:", error);
+          toast.error("Authentication failed");
+          navigate("/sign-in");
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+      }
+    }
+
+    checkUser();
+  }, [user, navigate, setUser]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
   }
 
   return (
@@ -31,7 +74,8 @@ export default function AdminLayout({ template = {} }) {
           template={{
             title: "Admin Dashboard",
             user: {
-              name: "Admin User",
+              name: user?.name || "Admin User",
+              email: user?.email || "",
               fallbackIconBg: "#006ef5",
             },
             ...template.navbar,
@@ -52,5 +96,5 @@ export default function AdminLayout({ template = {} }) {
         </main>
       </div>
     </div>
-  )
+  );
 }
