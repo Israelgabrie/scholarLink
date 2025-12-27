@@ -8,8 +8,6 @@ async function signIn(req, res) {
     const { email, password, rememberMe } = req.body || {};
     const tokenFromCookie = req.cookies?.authToken;
 
-    console.log(tokenFromCookie);
-
     let user;
 
     // -------------------
@@ -27,7 +25,7 @@ async function signIn(req, res) {
       if (!isPasswordValid) {
         return res
           .status(401)
-          .json({ success: false, message: "Invalid password" });
+          .json({ success: false, message: "Invalid password or email" });
       }
 
       user = await User.findById(rawUser._id)

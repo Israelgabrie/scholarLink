@@ -13,10 +13,11 @@ import {
   ShieldCheck,
   FileBarChart,
   UserPlus,
-  Mail,
+  Activity,
   Lock,
   ChevronDown,
   X,
+  CreditCard,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useUser } from "../../../contexts/userContext";
@@ -24,11 +25,11 @@ import { useUser } from "../../../contexts/userContext";
 export default function Sidebar({ isOpen, setIsOpen }) {
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const location = useLocation();
-  const {user} = useUser()
+  const { user } = useUser();
 
-  useEffect(()=>{
-    console.log(user)
-  },[user])
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   const menu = [
     {
@@ -53,21 +54,27 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       submenu: null,
     },
     {
-      name: "Analytics",
+      name: "Courses",
       icon: FileBarChart,
-      path: "/admin/analytics",
+      path: "/admin/course",
       submenu: null,
     },
     {
-      name: "Communications",
-      icon: Mail,
-      path: "/admin/comms",
+      name: "All Transactions",
+      icon: Activity,
+      path: "/admin/all-transactions",
       submenu: null,
     },
     {
       name: "System Logs",
       icon: Lock,
       path: "/admin/logs",
+      submenu: null,
+    },
+    {
+      name: "Payment",
+      icon: CreditCard,
+      path: "/admin/payment",
       submenu: null,
     },
     {

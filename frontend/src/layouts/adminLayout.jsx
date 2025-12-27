@@ -37,7 +37,6 @@ export default function AdminLayout({ template = {} }) {
 
           if (response?.success && response?.user?._id) {
             if (response?.user?.role == "admin") {
-              toast("heyyyyyy")
               setUser(response.user);
             } else {
               toast("Unauthorized User");

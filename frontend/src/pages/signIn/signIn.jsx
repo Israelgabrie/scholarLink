@@ -14,7 +14,7 @@ export default function ScholarLinkLogin() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const {user,setUser} = useUser()
+  const {setUser} = useUser()
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -33,11 +33,11 @@ export default function ScholarLinkLogin() {
       const response = await signInUser(loginData);
       console.log(response);
 
-      if (response.success) {
+      if (response?.success) {
         //if the api was successful
-        if (response.user.verified) {
+        if (response?.user.verified) {
           //check account type
-          if (response.user.role === "admin") {
+          if (response?.user.role === "admin") {
             setUser(response?.user)
             toast.success("Login successful! Redirecting...");
             navigate("/admin");
@@ -48,7 +48,7 @@ export default function ScholarLinkLogin() {
           toast("Account Not Verified");
           const otpResponse = await sendOtp({ email });
 
-          if (otpResponse.success) {
+          if (otpResponse?.success) {
             localStorage.setItem("authMail", email);
             toast.success("OTP sent to your email");
             navigate("/otp");
@@ -57,11 +57,12 @@ export default function ScholarLinkLogin() {
           }
         }
       } else {
+        
         toast.error(response?.message || "Invalid email or password");
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error(error?.message || "Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
