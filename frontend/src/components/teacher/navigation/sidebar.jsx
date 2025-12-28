@@ -1,28 +1,28 @@
-"use client";
+// ============================================
+// FILE 1: TeacherSidebar.jsx
+// Copy this entire code into your TeacherSidebar.jsx file
+// ============================================
 
-// ============================================
-// FILE 1: Sidebar.jsx
-// Copy this entire code into your Sidebar.jsx file
-// ============================================
+"use client";
 
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
+  BookOpen,
   Users,
+  ClipboardList,
+  FileText,
+  Calendar,
   Settings,
-  ShieldCheck,
-  FileBarChart,
-  UserPlus,
-  Activity,
-  Lock,
+  Award,
   ChevronDown,
   X,
-  CreditCard,
+  GraduationCap,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useUser } from "../../../contexts/userContext";
 
-export default function Sidebar({ isOpen, setIsOpen }) {
+export default function TeacherSidebar({ isOpen, setIsOpen }) {
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const location = useLocation();
   const { user } = useUser();
@@ -33,60 +33,69 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   const menu = [
     {
-      name: "Admin Dashboard",
+      name: "Dashboard",
       icon: LayoutDashboard,
-      path: "/admin/dashboard",
+      path: "/teacher/dashboard",
       submenu: null,
     },
     {
-      name: "User Management",
-      icon: Users,
-      path: "/admin/users",
+      name: "My Courses",
+      icon: BookOpen,
+      path: "/teacher/courses",
       submenu: [
-        { name: "All Users", path: "/admin/users/all", icon: Users },
-        { name: "Add User", path: "/admin/users/add", icon: UserPlus },
+        { name: "All Courses", path: "/teacher/courses/all", icon: BookOpen },
+        {
+          name: "Create Course",
+          path: "/teacher/courses/create",
+          icon: FileText,
+        },
       ],
     },
     {
-      name: "Invites",
-      icon: ShieldCheck,
-      path: "/admin/invites",
-      submenu: null,
-    },
-     {
-      name: "System Logs",
-      icon: ShieldCheck,
-      path: "/admin/logs",
+      name: "Students",
+      icon: Users,
+      path: "/teacher/students",
       submenu: null,
     },
     {
-      name: "Courses",
-      icon: FileBarChart,
-      path: "/admin/course",
+      name: "Attendance",
+      icon: ClipboardList,
+      path: "/teacher/attendance",
       submenu: null,
     },
     {
-      name: "All Transactions",
-      icon: Activity,
-      path: "/admin/all-transactions",
+      name: "Assignments",
+      icon: FileText,
+      path: "/teacher/assignments",
+      submenu: [
+        {
+          name: "All Assignments",
+          path: "/teacher/assignments/all",
+          icon: FileText,
+        },
+        {
+          name: "Create Assignment",
+          path: "/teacher/assignments/create",
+          icon: ClipboardList,
+        },
+      ],
+    },
+    {
+      name: "Grades",
+      icon: Award,
+      path: "/teacher/grades",
       submenu: null,
     },
     {
-      name: "Invite Users",
-      icon: Lock,
-      path: "/admin/invite-users",
-      submenu: null,
-    },
-    {
-      name: "Payment",
-      icon: CreditCard,
-      path: "/admin/payment",
+      name: "Schedule",
+      icon: Calendar,
+      path: "/teacher/schedule",
       submenu: null,
     },
     {
       name: "Settings",
       icon: Settings,
-      path: "/admin/settings",
+      path: "/teacher/settings",
       submenu: null,
     },
   ];
@@ -117,7 +126,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   const isActive = (path) => {
     if (!path) return false;
-    if (location.pathname === "/" && path === "/admin/dashboard") return true;
+    if (location.pathname === "/" && path === "/teacher/dashboard") return true;
     return location.pathname === path;
   };
 

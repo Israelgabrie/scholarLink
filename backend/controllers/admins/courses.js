@@ -2,10 +2,17 @@
 const Course = require("../../schemas/course");
 const User = require("../../schemas/user");
 const School = require("../../schemas/school");
+const { createLog } = require("../../schemas/logSchema");
 
 async function createCourse(req, res) {
   try {
-    const { userId, courseCode, courseTitle, description } = req.body;
+    let { userId, courseCode, courseTitle, description } = req.body;
+
+    // Trim input
+    userId = userId?.trim();
+    courseCode = courseCode?.trim();
+    courseTitle = courseTitle?.trim();
+    description = description?.trim() || "";
 
     if (!userId || !courseCode || !courseTitle) {
       return res.status(400).json({
@@ -34,6 +41,7 @@ async function createCourse(req, res) {
       courseCode: courseCode.toUpperCase(),
       school: user.school._id,
     });
+
     if (existingCourse) {
       return res.status(400).json({
         success: false,
@@ -45,13 +53,25 @@ async function createCourse(req, res) {
     const newCourse = new Course({
       courseCode: courseCode.toUpperCase(),
       title: courseTitle,
-      description: description || "",
+      description,
       school: user.school._id,
       createdBy: user._id,
       admins: [user._id], // initial admin is the creator
     });
 
     await newCourse.save();
+
+    // Fire-and-forget logging
+    createLog({
+      title: "Course created",
+      content: `${
+        user.fullName
+      } created course ${courseTitle} (${courseCode.toUpperCase()})`,
+      action: "CREATE",
+      actor: user._id,
+      level: "INFO",
+      meta: { courseId: newCourse._id },
+    });
 
     return res.status(201).json({
       success: true,
@@ -123,8 +143,14 @@ async function getCoursesByAdmin(req, res) {
 
 async function updateCourse(req, res) {
   try {
-    
-    const { userId, courseId, courseCode, courseTitle, description } = req.body;
+    let { userId, courseId, courseCode, courseTitle, description } = req.body;
+
+    // Trim input
+    userId = userId?.trim();
+    courseId = courseId?.trim();
+    courseCode = courseCode?.trim();
+    courseTitle = courseTitle?.trim();
+    description = description?.trim();
 
     if (!userId || !courseId) {
       return res.status(400).json({
@@ -142,7 +168,7 @@ async function updateCourse(req, res) {
     }
 
     // Only admins of this course can edit
-    if (!course.admins.includes(userId)) {
+    if (!course.admins.map((id) => id.toString()).includes(userId)) {
       return res.status(401).json({
         success: false,
         message: "Not authorized to edit this course",
@@ -156,6 +182,16 @@ async function updateCourse(req, res) {
 
     await course.save();
 
+    // Fire-and-forget logging
+    createLog({
+      title: "Course updated",
+      content: `Course ${course.title} (${course.courseCode}) updated by user ${userId}`,
+      action: "UPDATE",
+      actor: userId,
+      level: "INFO",
+      meta: { courseId: course._id },
+    });
+
     return res.status(200).json({
       success: true,
       message: "Course updated successfully",
@@ -166,13 +202,18 @@ async function updateCourse(req, res) {
     return res.status(500).json({
       success: false,
       message: "Internal server error",
+      error: error.message,
     });
   }
 }
 
 async function deleteCourse(req, res) {
   try {
-    const { userId, courseId } = req.body;
+    let { userId, courseId } = req.body;
+
+    // Trim input
+    userId = userId?.trim();
+    courseId = courseId?.trim();
 
     if (!userId || !courseId) {
       return res.status(400).json({
@@ -190,7 +231,7 @@ async function deleteCourse(req, res) {
     }
 
     // Only admins can delete
-    if (!course.admins.includes(userId)) {
+    if (!course.admins.map((id) => id.toString()).includes(userId)) {
       return res.status(401).json({
         success: false,
         message: "Not authorized to delete this course",
@@ -198,6 +239,16 @@ async function deleteCourse(req, res) {
     }
 
     await Course.findByIdAndDelete(courseId);
+
+    // Fire-and-forget logging
+    createLog({
+      title: "Course deleted",
+      content: `Course ${course.title} (${course.courseCode}) deleted by user ${userId}`,
+      action: "DELETE",
+      actor: userId,
+      level: "INFO",
+      meta: { courseId: course._id },
+    });
 
     return res.status(200).json({
       success: true,
@@ -208,6 +259,7 @@ async function deleteCourse(req, res) {
     return res.status(500).json({
       success: false,
       message: "Internal server error",
+      error: error.message,
     });
   }
 }

@@ -38,7 +38,7 @@ export default function PaymentPage() {
               "Exclusive webinars and events",
               "Advanced analytics and insights",
             ],
-            billingCycle: "Annual",
+            billingCycle: "Monthly",
             nextBillingDate: "December 26, 2026",
           });
         } else {

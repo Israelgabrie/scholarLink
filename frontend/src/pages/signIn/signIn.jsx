@@ -5,7 +5,7 @@ import { signInUser } from "../../services/signIn";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../../services/otp";
-import {useUser} from "../../contexts/userContext"
+import { useUser } from "../../contexts/userContext";
 
 export default function ScholarLinkLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,7 +14,7 @@ export default function ScholarLinkLogin() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const {setUser} = useUser()
+  const { setUser } = useUser();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,9 +36,13 @@ export default function ScholarLinkLogin() {
       if (response?.success) {
         //if the api was successful
         if (response?.user.verified) {
+          if (response?.user.role === "teacher") {
+            navigate("/teacher");
+            return;
+          }
           //check account type
           if (response?.user.role === "admin") {
-            setUser(response?.user)
+            setUser(response?.user);
             toast.success("Login successful! Redirecting...");
             navigate("/admin");
           } else {
@@ -57,7 +61,6 @@ export default function ScholarLinkLogin() {
           }
         }
       } else {
-        
         toast.error(response?.message || "Invalid email or password");
       }
     } catch (error) {
@@ -69,8 +72,8 @@ export default function ScholarLinkLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-white">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-7">
+    <div className="min-h-screen flex items-start sm:items-center justify-center p-2 sm:p-4 bg-white">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-5 sm:p-7 mt-8 sm:mt-12">
         {/* Logo and Header */}
         <div className="text-center mb-5">
           <div className="flex items-center justify-center mb-3">
@@ -158,7 +161,9 @@ export default function ScholarLinkLogin() {
               className="text-sm font-medium hover:underline cursor-pointer"
               style={{ color: "#006ef5" }}
               disabled={isLoading}
-               onClick={()=>{navigate("/forgot-password")}}
+              onClick={() => {
+                navigate("/forgot-password");
+              }}
             >
               Forgot password?
             </div>
@@ -182,7 +187,9 @@ export default function ScholarLinkLogin() {
             className="font-medium hover:underline cursor-pointer"
             style={{ color: "#006ef5" }}
             disabled={isLoading}
-            onClick={()=>{navigate("/sign-up")}}
+            onClick={() => {
+              navigate("/sign-up");
+            }}
           >
             Sign up
           </div>

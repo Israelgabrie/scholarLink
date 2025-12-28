@@ -1,10 +1,15 @@
+// ============================================
+// FILE 2: TeacherNavbar.jsx
+// Copy this entire code into your TeacherNavbar.jsx file
+// ============================================
+
 "use client";
 
-import { Menu, Bell, User, Search, Building2 } from "lucide-react";
+import { Menu, Bell, User, Search, GraduationCap } from "lucide-react";
 import { useState } from "react";
 import { useUser } from "../../../contexts/userContext";
 
-export default function Navbar({ onToggleSidebar, onNotificationClick, onSearch }) {
+export default function TeacherNavbar({ onToggleSidebar, onNotificationClick, onSearch }) {
   const { user, loading: userLoading, error: userError } = useUser();
   const [showSearch, setShowSearch] = useState(false);
   const [imageErrors, setImageErrors] = useState({
@@ -27,7 +32,7 @@ export default function Navbar({ onToggleSidebar, onNotificationClick, onSearch 
     return (
       <nav className="bg-white w-full shadow-md h-16 flex items-center justify-center">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 border-2 border-[#006ef5] border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-5 h-5 border-2 border-[#6600cc] border-t-transparent rounded-full animate-spin"></div>
           <span className="text-gray-600">Loading...</span>
         </div>
       </nav>
@@ -64,13 +69,13 @@ export default function Navbar({ onToggleSidebar, onNotificationClick, onSearch 
                 className="h-10 w-10 rounded-lg object-cover border border-gray-200"
               />
             ) : (
-              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-[#006ef5] to-[#0052cc] flex items-center justify-center border border-gray-200 shadow-sm">
-                <Building2 className="h-6 w-6 text-white" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-[#6600cc] to-[#4a0099] flex items-center justify-center border border-gray-200 shadow-sm">
+                <GraduationCap className="h-6 w-6 text-white" />
               </div>
             )}
 
             <div className="hidden sm:block">
-              <h1 className="text-sm font-semibold text-gray-900">Dashboard</h1>
+              <h1 className="text-sm font-semibold text-gray-900">Teacher Dashboard</h1>
               <p className="text-xs text-gray-500">{today}</p>
             </div>
           </div>
@@ -108,7 +113,7 @@ export default function Navbar({ onToggleSidebar, onNotificationClick, onSearch 
                   text-sm outline-none
                   transition-all duration-300 ease-in-out
                   bg-white
-                  focus:ring-2 focus:ring-[#006ef5] focus:border-transparent
+                  focus:ring-2 focus:ring-[#6600cc] focus:border-transparent
                   ${
                     showSearch
                       ? "w-48 opacity-100"
@@ -131,22 +136,22 @@ export default function Navbar({ onToggleSidebar, onNotificationClick, onSearch 
               {user?.profileImage && !imageErrors.userAvatar ? (
                 <img
                   src={user.profileImage}
-                  alt={user.fullName}
+                  alt={user?.fullName}
                   onError={() => handleImageError('userAvatar')}
                   className="h-9 w-9 rounded-full object-cover border-2 border-gray-200 shadow-sm"
                 />
               ) : (
-                <div className="h-9 w-9 rounded-full flex items-center justify-center border-2 border-gray-200 shadow-sm bg-[#2E5C8A]">
+                <div className="h-9 w-9 rounded-full flex items-center justify-center border-2 border-gray-200 shadow-sm bg-[#6600cc]">
                   <User className="h-5 w-5 text-white" />
                 </div>
               )}
 
               <div className="hidden sm:flex flex-col">
                 <span className="text-sm font-medium text-gray-700">
-                  {user?.fullName || "Guest User"}
+                  {user?.fullName || "Teacher"}
                 </span>
                 <span className="text-xs text-gray-500 capitalize">
-                  {user?.role || "User"}
+                  {user?.role || "Teacher"}
                 </span>
               </div>
             </div>

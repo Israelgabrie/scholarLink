@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 
 async function getFirstEnum(req, res) {
   try {
-    // Find the first document in the collection
-    const enumDoc = await EnumSchema.findOne({}).sort({ createdAt: 1 }); // earliest created
+    // Find the document where name = "basicPlan"
+    const enumDoc = await EnumSchema.findOne({ name: "basicPlan" });
 
     if (!enumDoc) {
       return res.status(404).json({
         success: false,
-        message: "No enum document found",
+        message: "No enum document with name 'basicPlan' found",
       });
     }
 
@@ -25,5 +25,6 @@ async function getFirstEnum(req, res) {
     });
   }
 }
+
 
 module.exports = { getFirstEnum };

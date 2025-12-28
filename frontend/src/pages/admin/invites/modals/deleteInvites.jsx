@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import { Trash2, X, AlertTriangle } from "lucide-react";
 import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
-import { deleteCourse } from "../../../../services/course";
+import { deleteInvite } from "../../../../services/invite";
 import { useUser } from "../../../../contexts/userContext";
 
 if (typeof window !== "undefined") {
@@ -30,41 +30,41 @@ const customStyles = {
   },
 };
 
-export default function DeleteCourseModal({ isOpen, setIsOpen, data, onSuccess }) {
+export default function DeleteInviteModal({ isOpen, setIsOpen, data, onSuccess }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const { user } = useUser();
 
   const handleDelete = async () => {
     if (!data?._id) {
-      toast.error("Course ID is missing");
+      toast.error("Invite ID is missing");
       return;
     }
 
     setIsDeleting(true);
 
     try {
-      console.log("Deleting course:", data);
+      console.log("Deleting invite:", data);
 
-      const response = await deleteCourse({
-        courseId: data?._id,
-        userId: user?._id,
+      const response = await deleteInvite({
+        inviteId: data?._id,
+        userId:user?._id
       });
 
       console.log("Delete Response:", response);
 
       if (response?.success) {
-        toast.success(response?.message || "Course deleted successfully!");
+        toast.success(response?.message || "Invite deleted successfully!");
         setIsOpen(false);
 
         if (onSuccess) {
           onSuccess(data?._id);
         }
       } else {
-        toast.error(response?.message || "Failed to delete course");
+        toast.error(response?.message || "Failed to delete invite");
       }
     } catch (error) {
       console.error("Delete error:", error);
-      toast.error(error?.message || "Failed to delete course");
+      toast.error(error?.message || "Failed to delete invite");
     } finally {
       setIsDeleting(false);
     }
@@ -81,7 +81,7 @@ export default function DeleteCourseModal({ isOpen, setIsOpen, data, onSuccess }
       isOpen={isOpen}
       onRequestClose={handleClose}
       style={customStyles}
-      contentLabel="Delete Course Modal"
+      contentLabel="Delete Invite Modal"
     >
       <div className="bg-white rounded-2xl overflow-hidden">
         <button
@@ -98,29 +98,37 @@ export default function DeleteCourseModal({ isOpen, setIsOpen, data, onSuccess }
           </div>
 
           <h2 className="text-xl font-bold text-gray-900 mb-2">
-            Delete Course?
+            Delete Invite?
           </h2>
 
           <p className="text-sm text-gray-600 mb-5">
-            This will permanently delete the course and all associated data.
+            This will permanently delete this invite and it cannot be undone.
           </p>
 
           <div className="bg-gray-50 rounded-xl p-4 mb-5 border border-gray-200">
             <div className="space-y-2.5 text-left">
               <div>
                 <p className="text-xs font-medium text-gray-500 mb-0.5">
-                  Course Code
+                  Email
                 </p>
                 <p className="text-base font-bold text-[#006ef5]">
-                  {data?.courseCode || "N/A"}
+                  {data?.email || "N/A"}
                 </p>
               </div>
               <div className="border-t border-gray-200 pt-2.5">
                 <p className="text-xs font-medium text-gray-500 mb-0.5">
-                  Course Title
+                  Matric Number
                 </p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {data?.title || "N/A"}
+                  {data?.matricNumber || "N/A"}
+                </p>
+              </div>
+              <div className="border-t border-gray-200 pt-2.5">
+                <p className="text-xs font-medium text-gray-500 mb-0.5">
+                  Department
+                </p>
+                <p className="text-sm font-semibold text-gray-900">
+                  {data?.department || "N/A"}
                 </p>
               </div>
             </div>
@@ -149,7 +157,7 @@ export default function DeleteCourseModal({ isOpen, setIsOpen, data, onSuccess }
               ) : (
                 <>
                   <Trash2 className="w-4 h-4" />
-                  Delete Course
+                  Delete Invite
                 </>
               )}
             </button>

@@ -4,13 +4,14 @@ import { Edit2, X } from "lucide-react";
 import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import { useUser } from "../../../../contexts/userContext";
-import { editCourse } from "../../../../services/course";
+import { editInvite } from "../../../../services/invite";
 
 if (typeof window !== "undefined") {
   Modal.setAppElement("body");
 }
+
 const getModalStyles = () => {
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640; // phone
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
   return {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -26,8 +27,8 @@ const getModalStyles = () => {
       padding: "0",
       border: "none",
       borderRadius: "16px",
-      maxWidth: isMobile ? "95%" : "600px", // reduced horizontal margin on phone
-      width: isMobile ? "95%" : "90%", // wider on phone
+      maxWidth: isMobile ? "95%" : "600px",
+      width: isMobile ? "95%" : "90%",
       maxHeight: "90vh",
       overflow: "hidden",
       display: "flex",
@@ -36,63 +37,75 @@ const getModalStyles = () => {
   };
 };
 
-export default function EditCourseModal({
+export default function EditInviteModal({
   isOpen,
   setIsOpen,
   data,
   onSuccess,
 }) {
-  const [courseCode, setCourseCode] = useState("");
-  const [courseTitle, setCourseTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
+  const [matricNumber, setMatricNumber] = useState("");
+  const [department, setDepartment] = useState("");
+  const [program, setProgram] = useState("");
+  const [session, setSession] = useState("");
+  const [className, setClassName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const { user } = useUser();
 
   useEffect(() => {
     if (data) {
-      setCourseCode(data?.courseCode || "");
-      setCourseTitle(data?.title || "");
-      setDescription(data?.description || "");
+      setName(data?.name || "");
+      setMatricNumber(data?.matricNumber || "");
+      setDepartment(data?.department || "");
+      setProgram(data?.program || "");
+      setSession(data?.session || "");
+      setClassName(data?.className || "");
     }
   }, [data]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!data?._id) {
-      toast.error("Course ID is missing");
+      toast.error("Invite ID is missing");
       return;
     }
 
     setIsUpdating(true);
     try {
       const updatedData = {
-        courseId: data?._id,
-        courseCode,
-        courseTitle,
-        description,
+        inviteId: data?._id,
+        name,
+        matricNumber,
+        department,
+        program,
+        session,
+        className,
         userId: user?._id,
       };
 
-      const response = await editCourse(updatedData);
+      const response = await editInvite(updatedData);
       console.log("Update response:", response);
 
       if (response?.success) {
-        toast.success(response?.message || "Course updated successfully!");
+        toast.success(response?.message || "Invite updated successfully!");
         if (onSuccess) {
           onSuccess({
             ...data,
-            courseCode,
-            title: courseTitle,
-            description,
+            name,
+            matricNumber,
+            department,
+            program,
+            session,
+            className,
           });
         }
         setIsOpen(false);
       } else {
-        toast.error(response?.message || "Failed to update course");
+        toast.error(response?.message || "Failed to update invite");
       }
     } catch (error) {
       console.error("Update error:", error);
-      toast.error(error?.message || "Failed to update course");
+      toast.error(error?.message || "Failed to update invite");
     } finally {
       setIsUpdating(false);
     }
@@ -107,9 +120,9 @@ export default function EditCourseModal({
       isOpen={isOpen}
       onRequestClose={handleClose}
       style={getModalStyles()}
-      contentLabel="Edit Course Modal"
+      contentLabel="Edit Invite Modal"
     >
-      <div className="bg-white rounded-2xl flex flex-col max-h-[90vh] ">
+      <div className="bg-white rounded-2xl flex flex-col max-h-[90vh]">
         {/* Header - Fixed */}
         <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-[#006ef5] to-[#0052cc] rounded-t-2xl">
           <div className="flex items-center gap-3">
@@ -117,7 +130,7 @@ export default function EditCourseModal({
               <Edit2 className="w-5 h-5 text-white" />
             </div>
             <h2 className="text-xl font-bold text-white tracking-tight">
-              Edit Course
+              Edit Invite
             </h2>
           </div>
           <button
@@ -133,13 +146,13 @@ export default function EditCourseModal({
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           <div>
             <label className="block text-sm font-semibold text-gray-800 mb-2">
-              Course Code <span className="text-red-500">*</span>
+              Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={courseCode}
-              onChange={(e) => setCourseCode(e.target.value)}
-              placeholder="e.g., CS101"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g., John Doe"
               required
               disabled={isUpdating}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#006ef5]/20 focus:border-[#006ef5] outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
@@ -148,13 +161,13 @@ export default function EditCourseModal({
 
           <div>
             <label className="block text-sm font-semibold text-gray-800 mb-2">
-              Course Title <span className="text-red-500">*</span>
+              Matric Number <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={courseTitle}
-              onChange={(e) => setCourseTitle(e.target.value)}
-              placeholder="e.g., Introduction to Programming"
+              value={matricNumber}
+              onChange={(e) => setMatricNumber(e.target.value)}
+              placeholder="e.g., CS2025001"
               required
               disabled={isUpdating}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#006ef5]/20 focus:border-[#006ef5] outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
@@ -163,16 +176,60 @@ export default function EditCourseModal({
 
           <div>
             <label className="block text-sm font-semibold text-gray-800 mb-2">
-              Description <span className="text-red-500">*</span>
+              Department <span className="text-red-500">*</span>
             </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter course description..."
+            <input
+              type="text"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              placeholder="e.g., Computer Science"
               required
-              rows="6"
               disabled={isUpdating}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#006ef5]/20 focus:border-[#006ef5] outline-none transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#006ef5]/20 focus:border-[#006ef5] outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-2">
+              Program <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={program}
+              onChange={(e) => setProgram(e.target.value)}
+              placeholder="e.g., B.Sc"
+              required
+              disabled={isUpdating}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#006ef5]/20 focus:border-[#006ef5] outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-2">
+              Session <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={session}
+              onChange={(e) => setSession(e.target.value)}
+              placeholder="e.g., 2024/2025"
+              required
+              disabled={isUpdating}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#006ef5]/20 focus:border-[#006ef5] outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-2">
+              Class Name
+            </label>
+            <input
+              type="text"
+              value={className}
+              onChange={(e) => setClassName(e.target.value)}
+              placeholder="e.g., Year 1A, 100 Level"
+              disabled={isUpdating}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#006ef5]/20 focus:border-[#006ef5] outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
             />
           </div>
         </div>
@@ -209,7 +266,7 @@ export default function EditCourseModal({
               ) : (
                 <>
                   <Edit2 className="w-4 h-4" />
-                  Update Course
+                  Update Invite
                 </>
               )}
             </button>

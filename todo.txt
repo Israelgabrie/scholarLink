@@ -1,0 +1,4 @@
+remeber tocheck all the endpoints that use session to endure they use thr format yyyy/yyyy 
+aloo remebr to put the middle ware functions for users and the middle ware should eb differtn for admin and other users
+
+check if two students have the same matci number in the same school before sending an invie also before creating the student user

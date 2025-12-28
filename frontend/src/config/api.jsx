@@ -19,6 +19,15 @@ export const routes = {
   getCourse: "course/get-courses",
   deleteCourse: "course/delete-course",
   editCourse: "course/edit-course",
+  updateAdminUser: "update/admin",
+
+  createInvite: "invite/create",
+  getInvites:"invite/get",
+  deleteInvite:"invite/delete",
+  editInvite:"invite/edit",
+  addUser:"invite/add-user",
+
+  adminGetLogs:"log/get"
 };
 
 // ✅ Axios instance

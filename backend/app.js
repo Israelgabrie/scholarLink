@@ -13,6 +13,9 @@ const { enumRoutes } = require("./routes/enumRoutes");
 const paystackRouter = require("./routes/payStackRoute.js");
 const School = require("./schemas/school");
 const { courseRouter } = require("./routes/courseRoute.js");
+const updateRouter = require("./routes/updateRoutes.js");
+const { inviteRouter } = require("./routes/invite.js");
+const { logRouter } = require("./routes/adminRoutes.js");
 
 // Add other routers here if needed
 // const otpRouter = require("./routes/otpRouter.js");
@@ -27,7 +30,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // React dev server
-      "http://192.168.101.12:5173"
+      "http://192.168.101.12:5173",
       // Add other dev IPs if testing on LAN
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -58,6 +61,9 @@ app.use("/auth", authRouter);
 app.use("/enum", enumRoutes);
 app.use("/paystack", paystackRouter);
 app.use("/course",courseRouter);
+app.use("/update",updateRouter);
+app.use("/invite",inviteRouter)
+app.use("/log",logRouter)
 
 
 
