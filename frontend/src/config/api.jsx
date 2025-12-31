@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const backendLocation = "http://localhost:5000";
+export const backendLocation = "";
 
 export const routes = {
   signUp: "auth/sign-up",
