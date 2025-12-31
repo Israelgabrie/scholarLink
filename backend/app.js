@@ -28,12 +28,7 @@ const PORT = process.env.PORT || 5000;
 // Enable CORS for dev frontend (adjust origins as needed)
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", // React dev server
-      "http://192.168.101.12:5173",
-      // Add other dev IPs if testing on LAN
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: true,
     credentials: true,
   })
 );
@@ -55,17 +50,14 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // ------------------- API ROUTES -------------------
 app.use("/auth", authRouter);
 app.use("/enum", enumRoutes);
 app.use("/paystack", paystackRouter);
-app.use("/course",courseRouter);
-app.use("/update",updateRouter);
-app.use("/invite",inviteRouter)
-app.use("/log",logRouter)
-
-
+app.use("/course", courseRouter);
+app.use("/update", updateRouter);
+app.use("/invite", inviteRouter);
+app.use("/log", logRouter);
 
 // ------------------- SERVE FRONTEND -------------------
 app.use(express.static(path.join(__dirname, "dist")));
