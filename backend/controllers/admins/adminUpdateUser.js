@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 const User = require("../../schemas/user");
 const School = require("../../schemas/school");
 const mongoose = require("mongoose");
-const {createLog} = require("../../schemas/logSchema")
+const { createLog } = require("../../schemas/logSchema");
 
 /* ---------------- CLOUDFARE R2 ---------------- */
 const s3 = new AWS.S3({
@@ -29,10 +29,7 @@ async function uploadFileToR2(buffer, fileName, mimeType) {
 async function deleteFileFromR2(fileUrl) {
   if (!fileUrl) return;
 
-  const key = fileUrl.replace(
-    `${process.env.CLOUDFLARE_PUBLIC_URL}/`,
-    ""
-  );
+  const key = fileUrl.replace(`${process.env.CLOUDFLARE_PUBLIC_URL}/`, "");
 
   await s3
     .deleteObject({
@@ -41,8 +38,6 @@ async function deleteFileFromR2(fileUrl) {
     })
     .promise();
 }
-
-
 
 /* ---------------- CONTROLLER ---------------- */
 async function updateAdminUser(req, res) {
@@ -81,7 +76,10 @@ async function updateAdminUser(req, res) {
     // Upload NEW user image first
     if (req.files?.userImage?.[0]) {
       const file = req.files.userImage[0];
-      const fileName = `users/${user._id}_${Date.now()}_${file.originalname}`;
+      const timestamp = Date.now();
+      const randomNum = Math.floor(Math.random() * 1000000000);
+      const extension = file.originalname.split(".").pop();
+      const fileName = `${timestamp}_${randomNum}.${extension}`;
 
       const newImageUrl = await uploadFileToR2(
         file.buffer,
@@ -124,7 +122,10 @@ async function updateAdminUser(req, res) {
       // Upload NEW school image first
       if (req.files?.schoolImage?.[0]) {
         const file = req.files.schoolImage[0];
-        const fileName = `schools/${school._id}_${Date.now()}_${file.originalname}`;
+        const timestamp = Date.now();
+        const randomNum = Math.floor(Math.random() * 1000000000);
+        const extension = file.originalname.split(".").pop();
+        const fileName = `${timestamp}_${randomNum}.${extension}`;
 
         const newSchoolImage = await uploadFileToR2(
           file.buffer,
@@ -148,7 +149,7 @@ async function updateAdminUser(req, res) {
       .select("-password")
       .populate("school");
 
-    // Fire-and-forget logging, won't block the operation
+    // Fire-and-forget logging
     createLog({
       title: "Admin settings updated",
       content: `${updatedUser.fullName} updated their profile and school settings`,
@@ -170,6 +171,5 @@ async function updateAdminUser(req, res) {
     });
   }
 }
-
 
 module.exports = { updateAdminUser };

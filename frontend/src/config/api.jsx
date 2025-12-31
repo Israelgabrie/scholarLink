@@ -1,6 +1,8 @@
 import axios from "axios";
 
-export const backendLocation = "";
+// Vite environment variable
+export const backendLocation =
+  import.meta.env.VITE_BACKEND_URL || "/";
 
 export const routes = {
   signUp: "auth/sign-up",
@@ -22,16 +24,16 @@ export const routes = {
   updateAdminUser: "update/admin",
 
   createInvite: "invite/create",
-  getInvites:"invite/get",
-  deleteInvite:"invite/delete",
-  editInvite:"invite/edit",
-  addUser:"invite/add-user",
+  getInvites: "invite/get",
+  deleteInvite: "invite/delete",
+  editInvite: "invite/edit",
+  addUser: "invite/add-user",
 
-  adminGetLogs:"log/get"
+  adminGetLogs: "log/get",
 };
 
 // ✅ Axios instance
 export const axiosInstance = axios.create({
   baseURL: backendLocation,
-  withCredentials: true, // always send cookies
+  withCredentials: true,
 });
