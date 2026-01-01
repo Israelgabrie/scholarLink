@@ -31,28 +31,28 @@ app.use(
     origin: [
       "https://scholar-link-gamma.vercel.app",
       "https://nematocystic-noble-tropophilous.ngrok-free.dev",
+      "http://localhost:5173"
     ],
     credentials: true,
   })
 );
-
 
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; " +
-      "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; " +
-      "font-src 'self' https://fonts.gstatic.com; " +
-      "script-src 'self'; " +
-      "img-src 'self' data:;"
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader(
+//     "Content-Security-Policy",
+//     "default-src 'self'; " +
+//       "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; " +
+//       "font-src 'self' https://fonts.gstatic.com; " +
+//       "script-src 'self'; " +
+//       "img-src 'self' data:;"
+//   );
+//   next();
+// });
 
 // ------------------- API ROUTES -------------------
 app.use("/auth", authRouter);

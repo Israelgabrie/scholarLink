@@ -22,12 +22,12 @@ export const routes = {
   updateAdminUser: "update/admin",
 
   createInvite: "invite/create",
-  getInvites:"invite/get",
-  deleteInvite:"invite/delete",
-  editInvite:"invite/edit",
-  addUser:"invite/add-user",
+  getInvites: "invite/get",
+  deleteInvite: "invite/delete",
+  editInvite: "invite/edit",
+  addUser: "invite/add-user",
 
-  adminGetLogs:"log/get"
+  adminGetLogs: "log/get",
 };
 
 // ✅ Axios instance
