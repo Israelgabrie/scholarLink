@@ -29,12 +29,13 @@ const PORT = process.env.PORT || 5000;
 app.use(
   cors({
     origin: [
+      "https://scholar-link-gamma.vercel.app",
       "https://nematocystic-noble-tropophilous.ngrok-free.dev",
-      "https://scholar-link-gamma.vercel.app/",
     ],
     credentials: true,
   })
 );
+
 
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.json());
