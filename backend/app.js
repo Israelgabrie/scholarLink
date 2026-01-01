@@ -28,7 +28,7 @@ const PORT = process.env.PORT || 5000;
 // Enable CORS for dev frontend (adjust origins as needed)
 app.use(
   cors({
-    origin: true,
+    origin: ["https://nematocystic-noble-tropophilous.ngrok-free.dev"],
     credentials: true,
   })
 );
