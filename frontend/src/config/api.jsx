@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const backendLocation = "https://scholarlink-gs5q.onrender.com";
+//export const backendLocation = "https://scholarlink-gs5q.onrender.com";
+export const backendLocation = "http://localhost:5000";
 
 export const routes = {
   signUp: "auth/sign-up",
@@ -28,6 +29,8 @@ export const routes = {
   addUser: "invite/add-user",
 
   adminGetLogs: "log/get",
+  adminUsers: "admin/users",
+  teacherAndCourses: "admin/teacher-courses",
 };
 
 // ✅ Axios instance

@@ -16,6 +16,7 @@ const { courseRouter } = require("./routes/courseRoute.js");
 const updateRouter = require("./routes/updateRoutes.js");
 const { inviteRouter } = require("./routes/invite.js");
 const { logRouter } = require("./routes/adminRoutes.js");
+const { userRouter } = require("./routes/users.js");
 
 // Add other routers here if needed
 // const otpRouter = require("./routes/otpRouter.js");
@@ -62,6 +63,7 @@ app.use("/course", courseRouter);
 app.use("/update", updateRouter);
 app.use("/invite", inviteRouter);
 app.use("/log", logRouter);
+app.use("/admin", userRouter);
 
 // ------------------- SERVE FRONTEND -------------------
 app.use(express.static(path.join(__dirname, "dist")));

@@ -1,23 +1,18 @@
 "use client";
 
-// ============================================
-// FILE 1: Sidebar.jsx
-// Copy this entire code into your Sidebar.jsx file
-// ============================================
-
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   Users,
   Settings,
-  ShieldCheck,
-  FileBarChart,
-  UserPlus,
+  Mail,
+  FileText,
+  BookOpen,
   Activity,
-  Lock,
+  UserPlus,
+  CreditCard,
   ChevronDown,
   X,
-  CreditCard,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useUser } from "../../../contexts/userContext";
@@ -33,7 +28,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   const menu = [
     {
-      name: "Admin Dashboard",
+      name: "Dashboard",
       icon: LayoutDashboard,
       path: "/admin/dashboard",
       submenu: null,
@@ -43,37 +38,43 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       icon: Users,
       path: "/admin/users",
       submenu: [
-        { name: "All Users", path: "/admin/users/all", icon: Users },
+        { name: "All Users", path: "/admin/users", icon: Users },
         { name: "Add User", path: "/admin/users/add", icon: UserPlus },
       ],
     },
     {
       name: "Invites",
-      icon: ShieldCheck,
+      icon: Mail,
       path: "/admin/invites",
       submenu: null,
     },
-     {
+    {
+      name: "Assign Teacher",
+      icon: Mail,
+      path: "/admin/assign-course",
+      submenu: null,
+    },
+    {
       name: "System Logs",
-      icon: ShieldCheck,
+      icon: FileText,
       path: "/admin/logs",
       submenu: null,
     },
     {
       name: "Courses",
-      icon: FileBarChart,
+      icon: BookOpen,
       path: "/admin/course",
       submenu: null,
     },
     {
-      name: "All Transactions",
+      name: "Transactions",
       icon: Activity,
       path: "/admin/all-transactions",
       submenu: null,
     },
     {
       name: "Invite Users",
-      icon: Lock,
+      icon: UserPlus,
       path: "/admin/invite-users",
       submenu: null,
     },
@@ -136,6 +137,25 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             background-size: 400% 400%;
             animation: gradientShift 6s ease infinite;
           }
+
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+          }
+
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            transition: background 0.2s;
+          }
+
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+          }
         `}
       </style>
 
@@ -162,8 +182,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <X className="h-6 w-6" />
         </button>
 
-        <div className="h-full p-3 pt-10 overflow-y-auto">
-          <div className="space-y-3">
+        <div className="h-full p-4 pt-12 overflow-y-auto custom-scrollbar">
+          <div className="space-y-2">
             {menu.map((item) => {
               const Icon = item.icon;
               const parentActive = isParentActive(item);
@@ -173,9 +193,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                   {item.submenu ? (
                     <div
                       onClick={() => handleItemClick(item)}
-                      className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
-                        parentActive ||
-                        (openSubmenu === item.name && parentActive)
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer ${
+                        parentActive || openSubmenu === item.name
                           ? "bg-white text-[#006ef5] shadow-lg"
                           : "text-white hover:bg-white/10"
                       }`}
@@ -197,7 +216,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                       to={item.path}
                       onClick={() => handleItemClick(item)}
                       className={({ isActive: navIsActive }) =>
-                        `w-full flex items-center justify-between px-4 py-2.5 rounded-lg transition-all duration-200 cursor-pointer ${
+                        `w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer ${
                           navIsActive || isActive(item.path)
                             ? "bg-white text-[#006ef5] shadow-lg"
                             : "text-white hover:bg-white/10"
@@ -217,11 +236,11 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                     <div
                       className={`ml-4 overflow-hidden transition-all duration-300 ease-in-out ${
                         openSubmenu === item.name
-                          ? "max-h-40 opacity-100"
+                          ? "max-h-40 opacity-100 mt-2"
                           : "max-h-0 opacity-0"
                       }`}
                     >
-                      <div className="mt-1 space-y-1">
+                      <div className="space-y-1">
                         {item.submenu.map((sub) => {
                           const SubIcon = sub.icon;
                           return (
@@ -232,7 +251,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                                 window.innerWidth < 1024 && setIsOpen(false)
                               }
                               className={({ isActive: navIsActive }) =>
-                                `w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-sm transition-colors cursor-pointer ${
+                                `w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
                                   navIsActive
                                     ? "text-white bg-white/20"
                                     : "text-white/80 hover:bg-white/10"
