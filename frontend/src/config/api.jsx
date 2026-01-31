@@ -21,6 +21,7 @@ export const routes = {
   deleteCourse: "course/delete-course",
   editCourse: "course/edit-course",
   updateAdminUser: "update/admin",
+  updateTeacherUser: "update/teacher",
 
   createInvite: "invite/create",
   getInvites: "invite/get",
@@ -31,6 +32,16 @@ export const routes = {
   adminGetLogs: "log/get",
   adminUsers: "admin/users",
   teacherAndCourses: "admin/teacher-courses",
+  setTeacherCourse: "course/set-course-admin",
+  getTeacherCourses: "course/teacher-courses",
+  removeTeacherCourse: "course/remove-teacher",
+
+  fetchCourseForReg: "course/fetch-course-for-reg",
+
+  logout: "logout",
+
+  fetchUploadResultData: "result/fetch-course-and-student",
+  uploadResult: "result/upload-result",
 };
 
 // ✅ Axios instance

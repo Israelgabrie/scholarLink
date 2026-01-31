@@ -1,3 +1,4 @@
+// StudentNavbar.jsx
 "use client";
 
 import { Menu, Bell, User, Search, Building2, LogOut } from "lucide-react";
@@ -5,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../contexts/userContext";
 
-export default function Navbar({ onToggleSidebar, onNotificationClick, onSearch }) {
+export default function StudentNavbar({ onToggleSidebar, onNotificationClick, onSearch }) {
   const { user, loading: userLoading, error: userError } = useUser();
   const [showSearch, setShowSearch] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -120,7 +121,7 @@ export default function Navbar({ onToggleSidebar, onNotificationClick, onSearch 
               )}
 
               <div className="hidden sm:block">
-                <h1 className="text-sm font-semibold text-gray-900">Dashboard</h1>
+                <h1 className="text-sm font-semibold text-gray-900">Student Portal</h1>
                 <p className="text-xs text-gray-500">{today}</p>
               </div>
             </div>
@@ -197,10 +198,10 @@ export default function Navbar({ onToggleSidebar, onNotificationClick, onSearch 
 
                   <div className="hidden sm:flex flex-col">
                     <span className="text-sm font-medium text-gray-700">
-                      {user?.fullName || "Guest User"}
+                      {user?.fullName || "Guest Student"}
                     </span>
                     <span className="text-xs text-gray-500 capitalize">
-                      {user?.role || "User"}
+                      {user?.role || "Student"}
                     </span>
                   </div>
                 </div>

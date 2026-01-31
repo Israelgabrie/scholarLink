@@ -173,4 +173,6 @@ async function getSchoolTeachersAndCourses(req, res) {
   }
 }
 
+
+
 module.exports = { getUsersByAdmin, getSchoolTeachersAndCourses };

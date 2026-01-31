@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 import { fetchTeacgerAndCourses } from "../../../services/adminUsers";
 import { useUser } from "../../../contexts/userContext";
+import { setTeacherCourseAdmin } from "../../../services/course";
 
 export default function AssignCourses() {
   const [teachers, setTeachers] = useState([]);
@@ -20,7 +21,7 @@ export default function AssignCourses() {
         setIsLoading(true);
 
         const response = await fetchTeacgerAndCourses({
-          userId: user._id,
+          userId: user?._id,
         });
 
         console.log("API Response:", response);
@@ -28,9 +29,9 @@ export default function AssignCourses() {
         if (response?.success) {
           setTeachers(response?.data?.teachers || []);
           setCourses(response?.data?.courses || []);
-          toast.success("Data loaded successfully!");
+          toast.success(response?.message || "Data loaded successfully!");
         } else {
-          toast.error("Failed to load teachers and courses");
+          toast.error(response?.message || "Failed to load teachers and courses");
         }
 
         setIsLoading(false);
@@ -56,7 +57,7 @@ export default function AssignCourses() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!selectedTeacher) {
@@ -69,12 +70,11 @@ export default function AssignCourses() {
       return;
     }
 
-    setIsSubmitting(true);
+    try {
+      setIsSubmitting(true);
 
-    // Simulate API call delay
-    setTimeout(() => {
       const requestData = {
-        userId: user._id,
+        userId: user?._id,
         teacherId: selectedTeacher,
         courseIds: selectedCourses,
         timestamp: new Date().toISOString(),
@@ -90,15 +90,24 @@ export default function AssignCourses() {
       console.log(courses.filter((c) => selectedCourses.includes(c._id)));
       console.log("=================================\n");
 
-      toast.success(
-        `Assigned ${selectedCourses.length} course(s) to teacher successfully!`
-      );
+      const response = await setTeacherCourseAdmin(requestData);
+      console.log("API Response:", response);
 
-      // Reset form
-      setSelectedTeacher("");
-      setSelectedCourses([]);
+      if (response?.success) {
+        toast.success(response?.message || "Courses assigned successfully!");
+        
+        // Reset form
+        setSelectedTeacher("");
+        setSelectedCourses([]);
+      } else {
+        toast.error(response?.message || "Failed to assign courses");
+      }
+    } catch (error) {
+      console.error("Error assigning courses:", error);
+      toast.error(error?.message || "Something went wrong");
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   const getSelectedTeacherName = () => {
@@ -115,7 +124,7 @@ export default function AssignCourses() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="w-full">
       {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-medium mb-2 flex items-center gap-2 text-[#006ef5]">
@@ -144,8 +153,8 @@ export default function AssignCourses() {
               >
                 <option value="">Choose a teacher...</option>
                 {teachers.map((teacher) => (
-                  <option key={teacher._id} value={teacher._id}>
-                    {teacher.fullName} - {teacher.email}
+                  <option key={teacher?._id} value={teacher?._id}>
+                    {teacher?.fullName} - {teacher?.email}
                   </option>
                 ))}
               </select>
@@ -194,12 +203,12 @@ export default function AssignCourses() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {courses.map((course) => {
-                  const isSelected = selectedCourses.includes(course._id);
+                  const isSelected = selectedCourses.includes(course?._id);
                   return (
                     <div
-                      key={course._id}
+                      key={course?._id}
                       onClick={() =>
-                        !isSubmitting && handleCourseToggle(course._id)
+                        !isSubmitting && handleCourseToggle(course?._id)
                       }
                       className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
                         isSelected
@@ -212,11 +221,11 @@ export default function AssignCourses() {
                           <div className="flex items-center gap-2 mb-1">
                             <BookOpen className="w-4 h-4 text-[#006ef5] flex-shrink-0" />
                             <span className="text-sm font-semibold text-[#006ef5]">
-                              {course.courseCode}
+                              {course?.courseCode}
                             </span>
                           </div>
                           <p className="text-sm text-gray-700 font-medium">
-                            {course.title}
+                            {course?.title}
                           </p>
                         </div>
                         <div
@@ -246,7 +255,7 @@ export default function AssignCourses() {
               </p>
               <div className="flex flex-wrap gap-2">
                 {selectedCourses.map((courseId) => {
-                  const course = courses.find((c) => c._id === courseId);
+                  const course = courses.find((c) => c?._id === courseId);
                   return (
                     <span
                       key={courseId}
@@ -260,7 +269,7 @@ export default function AssignCourses() {
                           handleCourseToggle(courseId);
                         }}
                         disabled={isSubmitting}
-                        className="ml-1 hover:text-red-600 transition-colors"
+                        className="ml-1 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -275,7 +284,13 @@ export default function AssignCourses() {
           <div className="flex gap-3">
             <button
               onClick={handleSubmit}
-              disabled={isSubmitting || teachers.length === 0 || courses.length === 0}
+              disabled={
+                isSubmitting || 
+                !selectedTeacher || 
+                selectedCourses.length === 0 || 
+                teachers.length === 0 || 
+                courses.length === 0
+              }
               className="flex-1 bg-[#006ef5] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#0052cc] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (

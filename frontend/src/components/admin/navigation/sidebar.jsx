@@ -1,3 +1,4 @@
+// Sidebar.jsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -13,6 +14,8 @@ import {
   CreditCard,
   ChevronDown,
   X,
+  ShieldCheck,
+  UserCog,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useUser } from "../../../contexts/userContext";
@@ -49,8 +52,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       submenu: null,
     },
     {
+      name: "Course Admins",
+      icon: ShieldCheck,
+      path: "/admin/course-rights",
+      submenu: null,
+    },
+    {
       name: "Assign Teacher",
-      icon: Mail,
+      icon: UserCog,
       path: "/admin/assign-course",
       submenu: null,
     },

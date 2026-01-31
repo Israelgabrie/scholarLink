@@ -8,3 +8,13 @@ export async function updateAdminUser(payLoad) {
     return error?.response?.data;
   }
 }
+
+export async function updateTeacherUser(payLoad) {
+  try {
+    const response = await axiosInstance.post(routes.updateTeacherUser, payLoad);
+    return response.data;
+  } catch (error) {
+    return error?.response?.data;
+  }
+}
+

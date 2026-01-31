@@ -17,6 +17,7 @@ const updateRouter = require("./routes/updateRoutes.js");
 const { inviteRouter } = require("./routes/invite.js");
 const { logRouter } = require("./routes/adminRoutes.js");
 const { userRouter } = require("./routes/users.js");
+const {resultRouter} = require("./routes/results")
 
 // Add other routers here if needed
 // const otpRouter = require("./routes/otpRouter.js");
@@ -32,7 +33,8 @@ app.use(
     origin: [
       "https://scholar-link-gamma.vercel.app",
       "https://nematocystic-noble-tropophilous.ngrok-free.dev",
-      "http://localhost:5173"
+      "http://localhost:5173",
+      "http://192.168.101.1:5173"
     ],
     credentials: true,
   })
@@ -64,9 +66,35 @@ app.use("/update", updateRouter);
 app.use("/invite", inviteRouter);
 app.use("/log", logRouter);
 app.use("/admin", userRouter);
+app.use("/result", resultRouter);
+
 
 // ------------------- SERVE FRONTEND -------------------
 app.use(express.static(path.join(__dirname, "dist")));
+
+/* ---------------- LOGOUT ROUTE ---------------- */
+app.post("/logout", (req, res) => {
+  try {
+    // Clear the authToken cookie exactly as it was set
+    res.clearCookie("authToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // match your signIn cookie
+      sameSite: "lax", // match signIn cookie
+      path: "/", // make sure path matches
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Logout failed",
+    });
+  }
+});
 
 app.get(/^(?!\/auth).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));

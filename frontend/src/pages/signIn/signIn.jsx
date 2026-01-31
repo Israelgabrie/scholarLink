@@ -20,38 +20,30 @@ export default function ScholarLinkLogin() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Console log the data that would be sent to backend
-    const loginData = {
-      email: email,
-      password: password,
-      rememberMe: rememberMe,
-    };
-
+    const loginData = { email, password, rememberMe };
     console.log("Login Data:", loginData);
 
     try {
       const response = await signInUser(loginData);
-      console.log(response);
+      console.log("Login Response:", response);
 
-      if (response?.success) {
-        //if the api was successful
-        if (response?.user.verified) {
-          if (response?.user.role === "teacher") {
-            navigate("/teacher");
-            return;
-          }
-          //check account type
-          if (response?.user.role === "admin") {
-            setUser(response?.user);
-            toast.success("Login successful! Redirecting...");
-            navigate("/admin");
-          } else {
-            toast("Layout not available yet");
-          }
-        } else {
-          toast("Account Not Verified");
+      if (!response) {
+        toast.error("No response from server. Try again later.");
+        return;
+      }
+
+      if (response.success) {
+        const user = response.user;
+
+        if (!user) {
+          toast.error("User data missing from response.");
+          return;
+        }
+
+        if (!user.verified) {
+          toast("Account not verified");
+
           const otpResponse = await sendOtp({ email });
-
           if (otpResponse?.success) {
             localStorage.setItem("authMail", email);
             toast.success("OTP sent to your email");
@@ -59,9 +51,29 @@ export default function ScholarLinkLogin() {
           } else {
             toast.error(otpResponse?.message || "Failed to resend OTP.");
           }
+          return;
+        }
+
+        // Set user for all roles
+        setUser(user);
+
+        // Redirect based on role
+        switch (user.role) {
+          case "teacher":
+            navigate("/teacher");
+            break;
+          case "student":
+            navigate("/student");
+            break;
+          case "admin":
+            toast.success("Login successful! Redirecting...");
+            navigate("/admin");
+            break;
+          default:
+            toast("Layout not available yet");
         }
       } else {
-        toast.error(response?.message || "Invalid email or password");
+        toast.error(response.message || "Invalid email or password");
       }
     } catch (error) {
       console.error("Login error:", error);

@@ -3,8 +3,12 @@ const {
   getCoursesByAdmin,
   createCourse,
   updateCourse,
-  deleteCourse
+  deleteCourse,
+  addTeacherAsCourseAdmin,
+  getTeachersWithTheirCourses,
+  removeTeacherAsCourseAdmin
 } = require("../controllers/admins/courses");
+const { getCoursesInfinite } = require("../controllers/courseReg");
 
 // Route to create a course
 courseRouter.post("/create-course", async (req, res) => {
@@ -40,6 +44,42 @@ courseRouter.post("/edit-course", async (req, res) => {
     await updateCourse(req, res);
   } catch (error) {
     console.error("Error in edit-courses route:", error);
+    res.status(500).send({ success: false, message: error?.message });
+  }
+});
+
+courseRouter.post("/set-course-admin", async (req, res) => {
+  try {
+    await addTeacherAsCourseAdmin(req, res);
+  } catch (error) {
+    console.error("Error in setting course route", error);
+    res.status(500).send({ success: false, message: error?.message });
+  }
+});
+
+courseRouter.post("/teacher-courses", async (req, res) => {
+  try {
+    await getTeachersWithTheirCourses(req, res);
+  } catch (error) {
+    console.error("Error in getting course route:", error);
+    res.status(500).send({ success: false, message: error?.message });
+  }
+});
+
+courseRouter.post("/remove-teacher", async (req, res) => {
+  try {
+    await removeTeacherAsCourseAdmin(req, res);
+  } catch (error) {
+    console.error("Error in removing teacher", error);
+    res.status(500).send({ success: false, message: error?.message });
+  }
+});
+
+courseRouter.post("/fetch-course-for-reg", async (req, res) => {
+  try {
+    await getCoursesInfinite(req, res);
+  } catch (error) {
+    console.error("Error in course reg", error);
     res.status(500).send({ success: false, message: error?.message });
   }
 });

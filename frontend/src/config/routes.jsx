@@ -16,6 +16,12 @@ import AdminLogs from "./../pages/admin/adminLogs/adminLogs";
 import TeacherLayout from "./../layouts/teacherLayout";
 import AdminUsers from "../pages/admin/users/adminUsers";
 import AssignCourse from "../pages/admin/assignCourse/assignCourse";
+import CourseRights from "../pages/admin/courseRights/courseRights";
+import Logout from "../pages/logout/logout";
+import StudentLayout from "../layouts/studentLayout";
+import CourseRegistration from "../pages/student/courseReg/courseReg";
+import TeacherSettingsPage from './../pages/teacher/settings/teacherSettingsx';
+import UploadResultsPage from "../pages/teacher/result/uploadResult";
 
 export const appRoutes = [
   { path: "/sign-in", element: <SignIn /> },
@@ -37,11 +43,27 @@ export const appRoutes = [
       { path: "logs", element: <AdminLogs /> },
       { path: "users", element: <AdminUsers /> },
       { path: "assign-course", element: <AssignCourse /> },
+      { path: "course-rights", element: <CourseRights /> },
     ],
   },
   { path: "/reset-password", element: <ResetPassword /> },
   {
     path: "teacher",
     element: <TeacherLayout />,
+    children:[
+      {path:"settings",element:<TeacherSettingsPage/>},
+       {path:"grades",element:<UploadResultsPage/>}
+    ]
+  },
+  {
+    path: "logout",
+    element: <Logout />,
+  },
+  {
+    path: "student",
+    element: <StudentLayout />,
+    children: [
+      { path: "course-registration", element: <CourseRegistration /> },
+    ],
   },
 ];

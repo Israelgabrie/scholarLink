@@ -27,11 +27,23 @@ export default function TeacherLayout({ template = {} }) {
           const response = await signInUser();
 
           if (response?.success && response?.user?._id) {
-            if (response?.user?.role === "teacher") {
-              setUser(response.user);
-            } else {
-              toast.error("Unauthorized User");
-              navigate("/sign-in");
+            const currentUser = response.user;
+            setUser(currentUser);
+
+            // Redirect based on role
+            switch (currentUser.role) {
+              case "teacher":
+                // stay on teacher layout
+                break;
+              case "student":
+                navigate("/student");
+                break;
+              case "admin":
+                navigate("/admin");
+                break;
+              default:
+                toast.error("Unauthorized User");
+                navigate("/sign-in");
             }
           } else {
             toast.error("Please sign in to continue");

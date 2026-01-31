@@ -1,16 +1,18 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import Sidebar from "../components/admin/navigation/sidebar";
-import Navbar from "../components/admin/navigation/navbar";
+import StudentSidebar from "../components/student/navigation/sidebar";
+import StudentNavbar from "../components/student/navigation/navbar";
 import { useUser } from "../contexts/userContext";
 import { signInUser } from "../services/signIn";
 import toast from "react-hot-toast";
 import LoadingScreen from "../pages/loadingScreen/loadingScreen";
 
-export default function AdminLayout() {
+/* =======================
+   COMPONENT
+======================= */
+
+export default function StudentLayout({ template = {} }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { user, setUser } = useUser();
@@ -18,16 +20,6 @@ export default function AdminLayout() {
 
   const handleToggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
-  };
-
-  const handleNotificationClick = () => {
-    console.log("Notifications clicked");
-    // Add your notification logic here
-  };
-
-  const handleSearch = (searchTerm) => {
-    console.log("Searching for:", searchTerm);
-    // Add your search logic here
   };
 
   useEffect(() => {
@@ -42,14 +34,14 @@ export default function AdminLayout() {
 
             // Redirect based on role
             switch (currentUser.role) {
-              case "admin":
-                // stay on admin layout
+              case "student":
+                // stay on student layout
                 break;
               case "teacher":
                 navigate("/teacher");
                 break;
-              case "student":
-                navigate("/student");
+              case "admin":
+                navigate("/admin");
                 break;
               default:
                 toast("Unauthorized User");
@@ -84,16 +76,12 @@ export default function AdminLayout() {
     <div className="flex flex-col h-screen w-full bg-gray-50 overflow-hidden">
       {/* HEADER */}
       <header className="w-full z-30">
-        <Navbar
-          onToggleSidebar={handleToggleSidebar}
-          onNotificationClick={handleNotificationClick}
-          onSearch={handleSearch}
-        />
+        <StudentNavbar onToggleSidebar={handleToggleSidebar} />
       </header>
 
       {/* BODY */}
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+        <StudentSidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
         <main className="flex-1 overflow-auto px-2 sm:px-6 py-6">
           <Outlet />
